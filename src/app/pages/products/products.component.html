@@ -1,0 +1,90 @@
+<div class="container">
+  <h1>Product Management</h1>
+  <p>CRN Technical Assessment — Product CRUD</p>
+
+  <div *ngIf="successMessage" class="success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="saveProduct()" #productForm="ngForm">
+    <label for="productName">Product Name</label>
+    <input
+      id="productName"
+      name="productName"
+      [(ngModel)]="productName"
+      maxlength="255"
+      required
+      placeholder="Enter product name"
+    />
+
+    <label for="createdBy">
+      {{ editingId !== null ? 'Modified By' : 'Created By' }}
+    </label>
+    <input
+      id="createdBy"
+      name="createdBy"
+      [(ngModel)]="createdBy"
+      maxlength="100"
+      required
+    />
+
+    <button type="submit" [disabled]="productForm.invalid">
+      {{ editingId !== null ? 'Update Product' : 'Add Product' }}
+    </button>
+
+    <button
+      type="button"
+      class="secondary"
+      *ngIf="editingId !== null"
+      (click)="resetForm()"
+    >
+      Cancel
+    </button>
+  </form>
+
+  <h2>Products</h2>
+
+  <p *ngIf="loading">Loading products...</p>
+
+  <table *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Product Name</th>
+        <th>Created By</th>
+        <th>Created On</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.id }}</td>
+        <td>{{ product.productName }}</td>
+        <td>{{ product.createdBy }}</td>
+        <td>{{ product.createdOn | date: 'medium' }}</td>
+        <td>
+          <button type="button" (click)="editProduct(product)">
+            Edit
+          </button>
+
+          <button
+            type="button"
+            class="danger"
+            (click)="deleteProduct(product.id)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="products.length === 0">
+        <td colspan="5">No products found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
